@@ -14,7 +14,6 @@ export default class App extends Component {
     query: '',
     direction: 'asc',
   }
-  
   componentDidMount = async () => {
     await this.getData();
   }
@@ -24,7 +23,7 @@ export default class App extends Component {
   }
 
   handleDirection = async (e) => {
-    this.setState({ direction: e.target.value });
+    await this.setState({ direction: e.target.value });
     this.getData();
   }
 
@@ -35,8 +34,10 @@ export default class App extends Component {
   getData = async () => {
     this.setState({ loading: true });
 
-    const pokeNameReq = request.get(`https://pokedex-alchemy.herokuapp.com/api/pokedex?pokemon=${this.state.query}&direction=${this.state.direction}`)
-    const pokeTypeReq = request.get(`https://pokedex-alchemy.herokuapp.com/api/pokedex?type=${this.state.query}&direction=${this.state.direction}`)
+    const pokeNameReq = request.get(`https://pokedex-alchemy.herokuapp.com/api/pokedex?pokemon=${this.state.query}&sort=pokemon&direction=${this.state.direction}`)
+
+
+    const pokeTypeReq = request.get(`https://pokedex-alchemy.herokuapp.com/api/pokedex?type=${this.state.query}&sort=pokemon&direction=${this.state.direction}`)
 
     const responses = await Promise.all([pokeNameReq, pokeTypeReq])
     const results = responses.map(res => res.body.results).flat()
@@ -48,6 +49,7 @@ export default class App extends Component {
   }
 
   render() {
+    console.log(this.state.direction);
     return (
       <div className="App">
         <input onChange={this.handleChange} placeholder="Search here!"  />

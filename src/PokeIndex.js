@@ -12,6 +12,7 @@ export default class PokeIndex extends Component {
         loading: false,
         query: '',
         direction: 'asc',
+        page: 1
       }
 
       componentDidMount = async () => {
@@ -26,6 +27,16 @@ export default class PokeIndex extends Component {
         await this.setState({ direction: e.target.value });
         this.getData();
       }
+
+      handlePage = async (e) => {
+        await this.setState({ page: this.state.page + 1 });
+        this.getData();
+    }
+    
+      handlePreviousPage = async (e) => {
+        await this.setState({ page: this.state.page - 1 });
+        this.getData();
+    }
     
       handleChange = (e) => {
         this.setState({ query: e.target.value});
@@ -34,15 +45,15 @@ export default class PokeIndex extends Component {
       getData = async () => {
         this.setState({ loading: true });
     
-        const pokeNameReq = request.get(`https://pokedex-alchemy.herokuapp.com/api/pokedex?pokemon=${this.state.query}&sort=pokemon&direction=${this.state.direction}`)
+        const pokeNameReq = request.get(`https://pokedex-alchemy.herokuapp.com/api/pokedex?pokemon=${this.state.query}&sort=pokemon&direction=${this.state.direction}&page=${this.state.page}`)
     
     
-        const pokeTypeReq = request.get(`https://pokedex-alchemy.herokuapp.com/api/pokedex?type=${this.state.query}&sort=pokemon&direction=${this.state.direction}`)
+        const pokeTypeReq = request.get(`https://pokedex-alchemy.herokuapp.com/api/pokedex?type=${this.state.query}&sort=pokemon&direction=${this.state.direction}&page=${this.state.page}`)
     
         const responses = await Promise.all([pokeNameReq, pokeTypeReq])
         const results = responses.map(res => res.body.results).flat()
     
-        await sleep(2000)
+        await sleep(2000);
     
         this.setState({ loading: false });
         this.setState({ pokedex: results });
@@ -59,6 +70,12 @@ export default class PokeIndex extends Component {
                     ? <LoadPause />
                     : <PokeList pokedex={this.state.pokedex}/>
                 }
+                <button onClick={this.handlePreviousPage}>
+                    Previous ({this.state.page - 1})
+                </button>
+                <button onClick={this.handlePage}>
+                    Next Page ({this.state.page + 1})
+                </button>
             </div>
         )
     };

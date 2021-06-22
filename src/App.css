@@ -38,6 +38,13 @@
 }
 
 .image {
-  width: 200px;
-  height: 200px;
+  width: 150px;
+  height: 150px;
 }
+
+/* .pokeCard {
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  justify-content: center;
+} */
